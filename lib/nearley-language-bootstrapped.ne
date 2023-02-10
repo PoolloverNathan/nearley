@@ -36,7 +36,7 @@ var rules = Object.assign({
     },
 }, literals([
     ",", "|", "$", "%", "(", ")",
-    ":?", ":*", ":+",
+    ":?", ":*", ":+", "?=",
     "@include", "@builtin", "@",
     "]",
 ]))
@@ -95,6 +95,8 @@ wordlist -> word
 
 completeexpression -> expr  {% function(d) { return {tokens: d[0]}; } %}
                     | expr _ js  {% function(d) { return {tokens: d[0], postprocess: d[2]}; } %}
+                    | expr _ "?=" _ expr _ js  {% function(d) { return {tokens: d[0], postprocess: d[6], lookahead: d[4]}; } %}
+                    | expr _ "?=" _ expr  {% function(d) { return {tokens: d[0], lookahead: d[4]}; } %}
 
 expr_member ->
       word {% id %}
